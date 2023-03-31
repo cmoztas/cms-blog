@@ -4,6 +4,7 @@ import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
 import { PostModule } from "./post/post.module";
 import { CategoryModule } from "./category/category.module";
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -18,7 +19,8 @@ import { CategoryModule } from "./category/category.module";
       synchronize: true
     }),
     PostModule,
-    CategoryModule
+    CategoryModule,
+    AuthModule
   ],
   controllers: [AppController],
   providers: [AppService]
