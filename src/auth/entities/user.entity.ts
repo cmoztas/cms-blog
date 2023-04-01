@@ -1,6 +1,7 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Post } from "../../post/entities/post.entity";
 
-@Entity('users')
+@Entity("users")
 export class User {
   @PrimaryGeneratedColumn()
   id: number;
@@ -19,4 +20,7 @@ export class User {
 
   @Column()
   profilePic: string;
+
+  @OneToMany(() => Post, (post: Post) => post.user)
+  posts: Post[];
 }
