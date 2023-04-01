@@ -2,6 +2,7 @@ import { BeforeInsert, Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedCo
 import { User } from '../../auth/entities/user.entity';
 import { Category } from '../../category/entities/category.entity';
 import slugify from 'slugify';
+import { Exclude } from 'class-transformer';
 
 @Entity('posts')
 export class Post {
@@ -27,16 +28,18 @@ export class Post {
   mainImageUrl: string;
 
   @Column()
+  @Exclude()
   userId: number;
 
   @Column({ default: 3 })
+  @Exclude()
   categoryId: number;
 
-  @ManyToOne(() => User, (user: User) => user.posts)
+  @ManyToOne(() => User, (user: User) => user.posts, {eager: true})
   @JoinColumn({ name: 'userId', referencedColumnName: 'id' })
   user: User;
 
-  @ManyToOne(() => Category, (c: Category) => c.post)
+  @ManyToOne(() => Category, (c: Category) => c.post, {eager: true})
   @JoinColumn({ name: 'categoryId', referencedColumnName: 'id' })
   category: Category;
 

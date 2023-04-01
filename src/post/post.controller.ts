@@ -7,7 +7,7 @@ import {
   Param,
   Delete,
   UsePipes,
-  ValidationPipe
+  ValidationPipe, UseInterceptors, ClassSerializerInterceptor
 } from '@nestjs/common';
 import { PostService } from './post.service';
 import { CreatePostDto } from './dto/create-post.dto';
@@ -16,6 +16,7 @@ import { DeleteResult, UpdateResult } from 'typeorm';
 import { Post as PostEntity } from './entities/post.entity';
 
 @Controller('post')
+@UseInterceptors(ClassSerializerInterceptor)
 export class PostController {
   constructor(private readonly postService: PostService) {
   }
