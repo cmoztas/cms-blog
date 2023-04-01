@@ -16,7 +16,7 @@ export class AuthController {
   }
 
   @Post('login')
-  async userLogin(@Body() userLoginDto: UserLoginDto, @Res() res: Response) {
+  async userLogin(@Body() userLoginDto: UserLoginDto, @Res() res: Response): Promise<Response> {
     const loginResponse: LoginResponse = await this.authService.login(userLoginDto);
 
     res.cookie('IsAuthenticated', true, { maxAge: 2 * 60 * 60 * 1000 });
@@ -29,7 +29,7 @@ export class AuthController {
   }
 
   @Post('register')
-  async userRegistration(@Body() userCreateDto: CreateUserDto) {
+  async userRegistration(@Body() userCreateDto: CreateUserDto): Promise<User> {
     return this.authService.register(userCreateDto);
   }
 }

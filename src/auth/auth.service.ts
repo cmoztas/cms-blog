@@ -7,6 +7,11 @@ import * as bcrypt from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
 import { CreateUserDto } from './dto/create-user.dto';
 
+interface LoginResponse {
+  token: Promise<string>;
+  user: User;
+}
+
 @Injectable()
 export class AuthService {
   constructor(
@@ -16,13 +21,10 @@ export class AuthService {
   ) {
   }
 
-  async login(loginDto: UserLoginDto) {
-    console.log(loginDto);
+  async login(loginDto: UserLoginDto): Promise<LoginResponse> {
     const user: User = await this.repo.createQueryBuilder('user')
       .addSelect('user.password')
       .where('user.email = :email', { email: loginDto.email }).getOne();
-
-    console.log(user);
 
     if (!user) {
       throw new UnauthorizedException('Bad Credentials');
@@ -33,23 +35,21 @@ export class AuthService {
           email: user.email
         });
         delete user.password;
-        return { token, user };
+        return <LoginResponse>{ token, user };
       } else {
         throw new UnauthorizedException('Bad Credentials');
       }
     }
   }
 
-  async verifyPassword(password: string, hash: string): Promise<any> {
+  async verifyPassword(password: string, hash: string): Promise<boolean> {
     return await bcrypt.compare(password, hash);
   }
 
-  async register(createUserDto: CreateUserDto) {
-    const { email } = createUserDto;
+  async register(createUserDto: CreateUserDto): Promise<User> {
+    const { email }: CreateUserDto = createUserDto;
 
-    const checkForUser = await this.repo.findOne({ where: { email } });
-
-    console.log(email, checkForUser);
+    const checkForUser: User = await this.repo.findOne({ where: { email } });
 
     if (checkForUser) {
       throw new BadRequestException('Email is already registered');
