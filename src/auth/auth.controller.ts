@@ -3,6 +3,7 @@ import { AuthService } from './auth.service';
 import { UserLoginDto } from './dto/user-login.dto';
 import { Response } from 'express';
 import { User } from './entities/user.entity';
+import { CreateUserDto } from './dto/create-user.dto';
 
 interface LoginResponse {
   token: Promise<string>;
@@ -25,5 +26,10 @@ export class AuthController {
     });
 
     return res.send({ success: true, user: loginResponse.user });
+  }
+
+  @Post('register')
+  async userRegistration(@Body() userCreateDto: CreateUserDto) {
+    return this.authService.register(userCreateDto);
   }
 }
