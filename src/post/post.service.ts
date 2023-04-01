@@ -1,9 +1,9 @@
-import { BadRequestException, Injectable } from "@nestjs/common";
-import { CreatePostDto } from "./dto/create-post.dto";
-import { UpdatePostDto } from "./dto/update-post.dto";
-import { InjectRepository } from "@nestjs/typeorm";
-import { Post } from "./entities/post.entity";
-import { DeleteResult, InsertResult, Repository, UpdateResult } from "typeorm";
+import { BadRequestException, Injectable } from '@nestjs/common';
+import { CreatePostDto } from './dto/create-post.dto';
+import { UpdatePostDto } from './dto/update-post.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Post } from './entities/post.entity';
+import { DeleteResult, Repository, UpdateResult } from 'typeorm';
 
 @Injectable()
 export class PostService {
@@ -13,10 +13,11 @@ export class PostService {
   ) {
   }
 
-  async create(createPostDto: CreatePostDto): Promise<InsertResult> {
-    const slug: string = createPostDto.title.split(" ").join("_").toLowerCase();
-
-    return await this.repo.insert({ ...createPostDto, slug });
+  async create(createPostDto: CreatePostDto): Promise<Post> {
+    const post: Post = new Post();
+    Object.assign(post, createPostDto);
+    post.userId = 1;
+    return await this.repo.save(post);
   }
 
   async findAll(): Promise<Post[]> {
@@ -26,7 +27,7 @@ export class PostService {
   async findOne(id: number): Promise<Post> {
     const post: Post = await this.repo.findOne({ where: { id: id } });
     if (!post) {
-      throw new BadRequestException("Post Not Found");
+      throw new BadRequestException('Post Not Found');
     }
     return post;
   }

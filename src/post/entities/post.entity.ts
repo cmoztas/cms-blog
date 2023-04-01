@@ -1,8 +1,9 @@
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
-import { User } from "../../auth/entities/user.entity";
-import { Category } from "../../category/entities/category.entity";
+import { BeforeInsert, Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { User } from '../../auth/entities/user.entity';
+import { Category } from '../../category/entities/category.entity';
+import slugify from 'slugify';
 
-@Entity("posts")
+@Entity('posts')
 export class Post {
   @PrimaryGeneratedColumn()
   id: number;
@@ -16,10 +17,10 @@ export class Post {
   @Column()
   slug: string;
 
-  @Column({ type: "timestamp", default: (): string => "CURRENT_TIMESTAMP" })
+  @Column({ type: 'timestamp', default: (): string => 'CURRENT_TIMESTAMP' })
   created_on: Date;
 
-  @Column({ type: "timestamp", default: (): string => "CURRENT_TIMESTAMP" })
+  @Column({ type: 'timestamp', default: (): string => 'CURRENT_TIMESTAMP' })
   modified_on: Date;
 
   @Column()
@@ -28,26 +29,22 @@ export class Post {
   @Column()
   userId: number;
 
-  @Column({default: 3})
+  @Column({ default: 3 })
   categoryId: number;
 
-  @ManyToOne(
-    () => User, (user: User) => user.posts,
-    {eager: true}
-  )
-  @JoinColumn({
-    name: 'userId',
-    referencedColumnName: 'id'
-  })
+  @ManyToOne(() => User, (user: User) => user.posts)
+  @JoinColumn({ name: 'userId', referencedColumnName: 'id' })
   user: User;
 
-  @ManyToOne(
-    () => Category, (category: Category) => category.post,
-    {eager: true}
-  )
-  @JoinColumn({
-    name: 'categoryId',
-    referencedColumnName: 'id'
-  })
+  @ManyToOne(() => Category, (c: Category) => c.post)
+  @JoinColumn({ name: 'categoryId', referencedColumnName: 'id' })
   category: Category;
+
+  @BeforeInsert()
+  slugifyPost(): void {
+    this.slug = slugify(this.title.substring(0, 20), {
+      lower: true,
+      replacement: '_'
+    })
+  }
 }
