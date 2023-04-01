@@ -1,4 +1,4 @@
-import { BeforeInsert, Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { BeforeInsert, BeforeUpdate, Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { User } from '../../auth/entities/user.entity';
 import { Category } from '../../category/entities/category.entity';
 import slugify from 'slugify';
@@ -44,6 +44,7 @@ export class Post {
   category: Category;
 
   @BeforeInsert()
+  @BeforeUpdate()
   slugifyPost(): void {
     this.slug = slugify(this.title.substring(0, 20), {
       lower: true,
