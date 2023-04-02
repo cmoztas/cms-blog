@@ -5,8 +5,11 @@ import * as cookieParser from 'cookie-parser';
 
 async function bootstrap(): Promise<void> {
   const app: INestApplication = await NestFactory.create(AppModule);
-  app.useGlobalPipes(new ValidationPipe({whitelist: true}));
   app.use(cookieParser());
+  app.enableCors({
+    origin: '*',
+  })
+  app.useGlobalPipes(new ValidationPipe({whitelist: true}));
 
   await app.listen(5000);
 }
