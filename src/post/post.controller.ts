@@ -26,6 +26,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { Express, Request, Response } from 'express';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
+import { ACGuard, UseRoles } from 'nest-access-control';
 
 interface AuthRequest extends Request {
   user: User;
@@ -39,7 +40,12 @@ export class PostController {
 
   @Post()
   @UsePipes(ValidationPipe)
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard('jwt'), ACGuard)
+  @UseRoles({
+    possession: 'any',
+    action: 'create',
+    resource: 'posts'
+  })
   create(@Body() createPostDto: CreatePostDto, @Req() req: AuthRequest): Promise<PostEntity> {
     return this.postService.create(createPostDto, <User>req.user);
   }
@@ -97,11 +103,23 @@ export class PostController {
 
   @Patch(':slug')
   @UsePipes(ValidationPipe)
+  @UseGuards(AuthGuard('jwt'), ACGuard)
+  @UseRoles({
+    possession: 'any',
+    action: 'update',
+    resource: 'posts'
+  })
   update(@Param('slug') slug: string, @Body() updatePostDto: UpdatePostDto): Promise<PostEntity> {
     return this.postService.update(slug, updatePostDto);
   }
 
   @Delete(':id')
+  @UseGuards(AuthGuard('jwt'), ACGuard)
+  @UseRoles({
+    possession: 'any',
+    action: 'delete',
+    resource: 'posts'
+  })
   remove(@Param('id') id: string): Promise<DeleteReturn> {
     return this.postService.remove(+id);
   }
