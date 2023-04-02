@@ -8,7 +8,7 @@ import { JwtService } from '@nestjs/jwt';
 import { CreateUserDto } from './dto/create-user.dto';
 
 interface LoginResponse {
-  token: Promise<string>;
+  token: string;
   user: User;
 }
 
@@ -30,7 +30,7 @@ export class AuthService {
       throw new UnauthorizedException('Bad Credentials');
     } else {
       if (await this.verifyPassword(loginDto.password, user.password)) {
-        const token: Promise<string> = this.jwtService.signAsync({
+        const token: string = await this.jwtService.signAsync({
           id: user.id,
           email: user.email
         });

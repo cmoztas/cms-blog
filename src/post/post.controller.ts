@@ -7,13 +7,14 @@ import {
   Param,
   Delete,
   UsePipes,
-  ValidationPipe, UseInterceptors, ClassSerializerInterceptor, Req, Query
+  ValidationPipe, UseInterceptors, ClassSerializerInterceptor, Req, Query, UseGuards
 } from '@nestjs/common';
 import { DeleteReturn, PostService } from './post.service';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { Post as PostEntity } from './entities/post.entity';
 import { User } from '../auth/entities/user.entity';
+import { AuthGuard } from '@nestjs/passport';
 
 interface AuthRequest extends Request {
   user: User;
@@ -21,6 +22,7 @@ interface AuthRequest extends Request {
 
 @Controller('posts')
 @UseInterceptors(ClassSerializerInterceptor)
+@UseGuards(AuthGuard('jwt'))
 export class PostController {
   constructor(private readonly postService: PostService) {
   }

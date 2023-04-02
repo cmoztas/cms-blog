@@ -6,7 +6,7 @@ import { User } from './entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 
 interface LoginResponse {
-  token: Promise<string>;
+  token: string;
   user: User;
 }
 
