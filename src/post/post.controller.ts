@@ -22,13 +22,13 @@ interface AuthRequest extends Request {
 
 @Controller('posts')
 @UseInterceptors(ClassSerializerInterceptor)
-@UseGuards(AuthGuard('jwt'))
 export class PostController {
   constructor(private readonly postService: PostService) {
   }
 
   @Post()
   @UsePipes(ValidationPipe)
+  @UseGuards(AuthGuard('jwt'))
   create(@Body() createPostDto: CreatePostDto, @Req() req: AuthRequest): Promise<PostEntity> {
     return this.postService.create(createPostDto, <User>req.user);
   }
@@ -49,6 +49,7 @@ export class PostController {
   }
 
   @Patch(':slug')
+  @UsePipes(ValidationPipe)
   update(@Param('slug') slug: string, @Body() updatePostDto: UpdatePostDto): Promise<PostEntity> {
     return this.postService.update(slug, updatePostDto);
   }
