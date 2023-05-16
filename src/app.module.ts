@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { PostModule } from './post/post.module';
 import { CategoryModule } from './category/category.module';
 import { AuthModule } from './auth/auth.module';
 import { AccessControlModule } from 'nest-access-control';
@@ -20,7 +19,6 @@ import { roles } from './auth/user-roles';
       autoLoadEntities: true,
       synchronize: true
     }),
-    PostModule,
     CategoryModule,
     AuthModule,
     AccessControlModule.forRoles(roles)
