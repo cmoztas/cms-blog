@@ -1,5 +1,4 @@
 import { BeforeInsert, Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { Post } from '../../post/entities/post.entity';
 import * as bcrypt from 'bcryptjs';
 import { UserRoles } from '../user-roles';
 
@@ -25,9 +24,6 @@ export class User {
 
   @Column({ type: 'enum', enum: UserRoles, default: UserRoles.Reader })
   roles: UserRoles;
-
-  @OneToMany(() => Post, (post: Post) => post.user)
-  posts: Post[];
 
   @BeforeInsert()
   hashPassword(): void {
