@@ -26,6 +26,12 @@ export class AuthController {
   async userLogin(@Body() userLoginDto: UserLoginDto, @Res() res: Response): Promise<Response> {
     const loginResponse: LoginResponse = await this.authService.login(userLoginDto);
 
+    res.cookie('IsAuthenticated', true, { maxAge: 2 * 60 * 60 * 1000 });
+    res.cookie('Authentication', loginResponse.token, {
+      httpOnly: true,
+      maxAge: 2 * 60 * 60 * 1000
+    });
+
     return res.send({ success: true, user: loginResponse.user });
   }
 
@@ -42,6 +48,8 @@ export class AuthController {
 
   @Post('logout')
   logout(@Res() res: Response): Response {
+    res.clearCookie('Authentication');
+    res.clearCookie('IsAuthenticated');
     return res.status(200).send({ success: true });
   }
 }
